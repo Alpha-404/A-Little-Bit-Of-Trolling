@@ -6,6 +6,8 @@
 bool flipped = false;
 bool wifi = true;
 
+HDC hdc;
+
 void SendInput2(UINT button)
 {
 	UINT mappedkey;
@@ -29,10 +31,19 @@ void bomb()
 	}
 }
 
+void DrawLine(float StartX, float StartY, float EndX, float EndY, float ColourCode) {
+	HPEN Pen = CreatePen(PS_SOLID, 2, ColourCode);
+	(HPEN)SelectObject(hdc, Pen);
+	MoveToEx(hdc, StartX, StartY, NULL);
+	LineTo(hdc, EndX, EndY);
+	DeleteObject(SelectObject(hdc, Pen));
+}
+
 int main()
 {
 	ShowWindow(GetConsoleWindow(), true ? SW_SHOWNORMAL : SW_HIDE);
 	int acode = 9043;
+	hdc = GetDC(0);
 	int code;
 	std::cin >> code;
 	if (code == acode)
@@ -59,7 +70,7 @@ int main()
 				printf("8. CapsLock - Messes with the capslock\n");
 				printf("9. Flip - Makes The Screen Upside down\n");
 				printf("10. Hide - Hides the console\n");
-				printf("11. cheetos - spams cheetos\n");
+				printf("11. Dragmouse - Makes the mouse draw lines\n");
 			}
 			if (x == "Flip")
 			{
@@ -103,8 +114,7 @@ int main()
 			}
 			if (x == "OnePoundFish")
 			{
-				printf("Press END to stop\n");
-				while (!GetAsyncKeyState(VK_END))
+				while (true)
 				{
 					if (GetAsyncKeyState(VK_CONTROL))
 					{
@@ -144,9 +154,18 @@ int main()
 			{
 				system("c:\\windows\\system32\\shutdown /s");
 			}
-			if (x == "cheetos")
+			if (x == "Dragmouse")
 			{
-
+				ShowWindow(GetConsoleWindow(), false ? SW_SHOWNORMAL : SW_HIDE);
+				while (true)
+				{
+					POINT pos;
+					GetCursorPos(&pos);
+					Sleep(100);
+					POINT pos2;
+					GetCursorPos(&pos2);
+					DrawLine(pos.x, pos.y, pos2.x, pos2.y, 0x00ff00);
+				}
 			}
 			if (x == "NoMouse")
 			{
